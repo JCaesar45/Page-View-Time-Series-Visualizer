@@ -1,0 +1,94 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Import data from csv, parse dates, and set the date as index
+df = pd.read_csv("fcc-forum-pageviews.csv", parse_dates=['date'], index_col='date')
+
+# Clean data by removing days with page views in the top 2.5% or bottom 2.5%
+low_quantile = df["pageviews"].quantile(0.025)
+high_quantile = df["pageviews"].quantile(0.975)
+df = df[(df["pageviews"] >= low_quantile) & (df["pageviews"] <= high_quantile)]
+
+
+def draw_line_plot():
+    """Creates and returns a line plot of the daily page views."""
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    # Draw line plot using the index (date) and page views values
+    ax.plot(df.index, df["pageviews"], color="red", linewidth=1)
+    
+    # Add plot title and labels
+    ax.set_title("Daily freeCodeCamp Forum Page Views 5/2016-12/2019")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Page Views")
+    
+    # Ensure tight layout
+    plt.tight_layout()
+    
+    return fig
+
+
+def draw_bar_plot():
+    """Creates and returns a bar plot showing the average daily page views for each month grouped by year."""
+    # Create a copy and add 'year' and 'month' columns (month as number for grouping)
+    df_bar = df.copy()
+    df_bar["year"] = df_bar.index.year
+    df_bar["month"] = df_bar.index.month
+
+    # Group the data by 'year' and 'month' and calculate the average page views
+    df_bar = df_bar.groupby(["year", "month"])["pageviews"].mean().unstack()
+
+    # Draw the bar plot using the pivoted DataFrame; each column represents a month
+    fig = df_bar.plot(kind="bar", figsize=(12, 8)).figure
+    
+    # Label the axes and the legend; reassign the month labels to full names in proper order
+    plt.xlabel("Years")
+    plt.ylabel("Average Page Views")
+    plt.legend(
+        title="Months",
+        labels=["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"]
+    )
+    
+    plt.tight_layout()
+    return fig
+
+
+def draw_box_plot():
+    """Creates and returns two adjacent box plots:
+       - Year-wise box plot (Trend): Shows the distribution of page views per year.
+       - Month-wise box plot (Seasonality): Shows the distribution of page views per month.
+    """
+    # Prepare a copy and reset the index to use the date in columns
+    df_box = df.copy().reset_index()
+    
+    # Create new columns for 'year' and 'month'
+    df_box["year"] = df_box["date"].dt.year
+    # Extract abbreviated month names and also create a numerical month for proper ordering
+    df_box["month"] = df_box["date"].dt.strftime("%b")
+    df_box["month_num"] = df_box["date"].dt.month
+    
+    # Sort values by month number to ensure proper order in the month-wise plot
+    df_box = df_box.sort_values("month_num")
+    
+    # Create a figure with two adjacent subplots
+    fig, axes = plt.subplots(1, 2, figsize=(20, 8))
+    
+    # Year-wise Box Plot (Trend)
+    sns.boxplot(x="year", y="pageviews", data=df_box, ax=axes[0])
+    axes[0].set_title("Year-wise Box Plot (Trend)")
+    axes[0].set_xlabel("Year")
+    axes[0].set_ylabel("Page Views")
+    
+    # Month-wise Box Plot (Seasonality)
+    # Define the correct order for abbreviated month names
+    month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    sns.boxplot(x="month", y="pageviews", data=df_box, order=month_order, ax=axes[1])
+    axes[1].set_title("Month-wise Box Plot (Seasonality)")
+    axes[1].set_xlabel("Month")
+    axes[1].set_ylabel("Page Views")
+    
+    plt.tight_layout()
+    return fig
