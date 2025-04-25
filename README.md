@@ -1,70 +1,135 @@
+Here’s an extended version of your `README.md` that includes placeholders for example images and a basic Jupyter notebook template.
+
+---
+
+## 📄 `README.md`
+
 ```markdown
-# Sea Level Predictor
+# Data Analysis with Python – Page Views Visualizer
 
-This project predicts sea level rise using historical data from 1880 to 2014. It uses the `epa-sea-level.csv` dataset, which contains the global average sea level change over time, to fit two lines of best fit and predict future sea level changes up to 2050.
+This project analyzes freeCodeCamp Forum page views from May 2016 to December 2019. It cleans the data and generates three visualizations to uncover trends and seasonality.
 
-## Project Overview
+---
 
-- **Dataset**: The data comes from the U.S. Environmental Protection Agency (EPA) and includes the global average sea level change from 1880-2014.
-- **Goal**: Create a visualization that shows the historical sea level change and predictions for future sea levels using linear regression models.
+## 📁 Dataset
 
-## Features
+- **Filename**: `fcc-forum-pageviews.csv`
+- **Columns**: `date`, `pageviews`
+- **Rows**: Daily page view data
 
-- **Scatter plot** of the historical sea level data.
-- **Line of Best Fit** from 1880–2050.
-- **Line of Best Fit** from 2000–2050 (projecting future rise using recent trends).
-- **Predictions** for sea level rise by 2050.
+---
 
-## Setup
+## 📊 Visualizations
 
-### Prerequisites
+### 1. Line Plot – Daily Page Views
 
-To run this project, you need the following:
+Shows daily trends over the entire time period.
 
-- Python 3.x
+**Function**: `draw_line_plot()`
+
+![Line Plot](images/line_plot.png)
+
+---
+
+### 2. Bar Plot – Monthly Averages by Year
+
+Displays monthly average page views grouped by year.
+
+**Function**: `draw_bar_plot()`
+
+![Bar Plot](images/bar_plot.png)
+
+---
+
+### 3. Box Plots – Year-wise & Month-wise
+
+Two box plots for trend and seasonality analysis.
+
+**Function**: `draw_box_plot()`
+
+![Box Plots](images/box_plots.png)
+
+---
+
+## 🧹 Data Cleaning
+
+- Removed top and bottom 2.5% of data to eliminate outliers:
+  ```python
+  low = df["pageviews"].quantile(0.025)
+  high = df["pageviews"].quantile(0.975)
+  df = df[(df["pageviews"] >= low) & (df["pageviews"] <= high)]
+  ```
+
+---
+
+## 🛠️ Tech Stack
+
+- Python 3
 - Pandas
 - Matplotlib
-- SciPy
+- Seaborn
 
-### Installing Dependencies
+---
 
-You can install the required dependencies using pip:
+## 🚀 How to Run
 
-```bash
-pip install pandas matplotlib scipy
+1. Ensure `fcc-forum-pageviews.csv` is in your working directory.
+2. Run the Python file or use the notebook template provided.
+3. Call:
+    ```python
+    draw_line_plot()
+    draw_bar_plot()
+    draw_box_plot()
+    ```
+
+---
+
+## 📓 Jupyter Notebook Template
+
+Here’s a basic starter notebook:
+
+```python
+# Import libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset
+df = pd.read_csv("fcc-forum-pageviews.csv", parse_dates=['date'], index_col='date')
+
+# Clean data
+low = df["pageviews"].quantile(0.025)
+high = df["pageviews"].quantile(0.975)
+df = df[(df["pageviews"] >= low) & (df["pageviews"] <= high)]
+
+# Define visualization functions (copy your functions here)
+
+# Run and display
+draw_line_plot()
+draw_bar_plot()
+draw_box_plot()
 ```
 
-### Running the Script
+---
 
-To run the project, simply execute the `sea_level_predictor.py` file. This will generate a plot and save it as an image.
-
-```bash
-python sea_level_predictor.py
-```
-
-The plot will be saved as `sea_level_plot.png` in the project directory.
-
-### Testing
-
-There are unit tests available in the `test_module.py` file. The tests are imported into `main.py`, which is used to test the functionality of the plot creation.
-
-To run the tests, use the following:
-
-```bash
-python main.py
-```
-
-### Files
-
-- `sea_level_predictor.py`: Contains the code to generate the plot and perform the linear regression.
-- `main.py`: Used to run and test the code.
-- `test_module.py`: Contains unit tests to validate the implementation.
-- `epa-sea-level.csv`: The dataset with historical sea level data.
-
-## License
-
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+## 📂 Folder Structure
 
 ```
+📦 project-root/
+├── fcc-forum-pageviews.csv
+├── page_views_visualizer.py
+├── page_views_visualizer.ipynb
+├── images/
+│   ├── line_plot.png
+│   ├── bar_plot.png
+│   └── box_plots.png
+└── README.md
+```
 
-This README provides everything from setup instructions to usage and testing. Let me know if you want to modify any part of it!
+---
+
+## 📬 License
+
+This project was built for educational purposes using freeCodeCamp's dataset.
+
+```
