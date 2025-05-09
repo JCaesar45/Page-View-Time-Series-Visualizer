@@ -1,9 +1,3 @@
-Here’s an extended version of your `README.md` that includes placeholders for example images and a basic Jupyter notebook template.
-
----
-
-## 📄 `README.md`
-
 ```markdown
 # Data Analysis with Python – Page Views Visualizer
 
